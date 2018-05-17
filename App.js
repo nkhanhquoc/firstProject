@@ -9,6 +9,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   View
 } from 'react-native';
 
@@ -21,14 +22,31 @@ const instructions = Platform.select({
 
 type Props = {};
 export default class App extends Component<Props>{
-  render() {
+  constructor(props){
+    super(props);
+    this.state = {text:''};
+  }
+  // render() {
+  //   return (
+  //     <View style={{flex:1, flexDirection: 'column'}}>
+  //       <View style={{flex:1,backgroundColor:'powderblue'}}><TextGreetings name='Khánh Toong'/></View>
+  //       <View style={{flex:2,backgroundColor:'skyblue'}}><TextGreetings name='Hiền Toong'/></View>
+  //       <View style={{flex:3,backgroundColor:'steelblue'}}><TextGreetings name='Nguyên Toong'/></View>
+  //     </View>
+  //   );
+  // }
+  render(){
     return (
-      <View style={{height:200}}>
-        <View style={{flex:1,backgroundColor:'powderblue'}}><TextGreetings name='Khánh Toong'/></View>
-        <View style={{flex:2,backgroundColor:'skyblue'}}><TextGreetings name='Hiền Toong'/></View>
-        <View style={{flex:3,backgroundColor:'steelblue'}}><TextGreetings name='Nguyên Toong'/></View>
+      <View style={{padding:10}}>
+        <TextInput style={{height:40}}
+        placeholder="nhập từ khóa để translate"
+        onChangeText={(text) => this.setState({text})}
+        />
+        <Text style={{padding:10, fontSize:40}}>
+          {this.state.text.split(' ').map((word) => word && 'abc').join(' ')}
+        </Text>
       </View>
-    );
+    )
   }
 }
 
