@@ -20,23 +20,21 @@ const instructions = Platform.select({
 });
 
 type Props = {};
-export default class App extends Component<Props>{
+export default class App extends Component<Props> {
   render() {
     return (
-      <View style={{height:200}}>
-        <View style={{flex:1,backgroundColor:'powderblue'}}><TextGreetings name='Khánh Toong'/></View>
-        <View style={{flex:2,backgroundColor:'skyblue'}}><TextGreetings name='Hiền Toong'/></View>
-        <View style={{flex:3,backgroundColor:'steelblue'}}><TextGreetings name='Nguyên Toong'/></View>
+      <View style={styles.container}>
+        <Text style={styles.welcome}>
+          Welcome to React Native!
+        </Text>
+        <Text style={styles.instructions}>
+          To get started, edit App.js
+        </Text>
+        <Text style={styles.instructions}>
+          {instructions}
+        </Text>
       </View>
     );
-  }
-}
-
-class TextGreetings extends Component{
-  render(){
-    return(
-      <Text>Hello {this.props.name}!!!</Text>
-    )
   }
 }
 
@@ -45,8 +43,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#F5FCFF',
-    backgroundColor: 'skyblue',
+    backgroundColor: '#F5FCFF',
   },
   welcome: {
     fontSize: 20,
