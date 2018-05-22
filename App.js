@@ -1,4 +1,3 @@
-@@ -1,298 +0,0 @@
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -20,10 +19,13 @@ import {
   FlatList,
   SectionList,
   ActivityIndicator,
+  PermissionsAndroid,
+  Dimensions,
   View
 } from 'react-native';
 import MapView from 'react-native-maps';
 
+let { width, height } = Dimensions.get('window');
 // const instructions = Platform.select({
 //   ios: 'Press Cmd+R to reload,\n' +
 //     'Cmd+D or shake for dev menu',
@@ -44,28 +46,41 @@ export default class App extends Component{
       isLoading:true
     };
   }
-  componentDidMount(){
-    this.watchId = navigator.geolocation.watchPosition(
-      (position)=>{
-        this.setState({
+  async componentDidMount(){
+
+    const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+          'title': 'Location App required Location permission',
+          'message': 'We required Location permission in order to get device location ' +
+              'Please grant us.'
+      })
+
+    if(granted == PermissionsAndroid.RESULTS.GRANTED){
+      console.log("You can access for the location of device");
+      navigator.geolocation.getCurrentPosition(
+        (position)=>{
+          this.setState({
+            isLoading:false,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            error: null,
+          });
+        },
+        (error) => {this.setState({
+          error: error.message,
           isLoading:false,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          error: null,
-        });
-      },
-      (error) => {this.setState({
-        error: error.message,
-        isLoading:false,
-        });
-      },
-      {enableHighAccuracy: true, timeout:20000, maximumAge: 1000},
-    );
+          });
+        },
+        {enableHighAccuracy: true, timeout:20000},
+      );
+    }else {
+        console.log("You don't have access for the location");
+    }
   }
 
-  componentWillUnmount(){
-    navigator.geolocation.clearWatch(this.watchId);
-  }
+  // componentWillUnmount(){
+  //   navigator.geolocation.clearWatch(this.watchId);
+  // }
   render(){
         if(this.state.isLoading){
           return(
@@ -76,21 +91,22 @@ export default class App extends Component{
         }
     return (
       // <View style={{padding:10}}>
-      // <Text> watch Latitude: {this.state.latitude} </Text>
-      // <Text> watch Longitude: {this.state.longitude} </Text>
-      // {this.state.error ? <Text>Error: {this.state.error}</Text> : null}
+      //   <Text> watch Latitude: {this.state.latitude} </Text>
+      //   <Text> watch Longitude: {this.state.longitude} </Text>
+      //   {this.state.error ? <Text>Error: {this.state.error}</Text> : null}
       // </View>
       <MapView
           style={styles.map}
           region={{
             latitude: this.state.latitude,
             longitude: this.state.longitude,
-            latitudeDelta: 0.0043,
-            longitudeDelta: 0.0042,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
         }}
-      />
-
-    )
+        >
+        <MapView.Marker coordinate={{latitude: this.state.latitude, longitude: this.state.longitude}}/>
+      </MapView>
+        )
       // return (
       //   <View style={{padding:10}}>
       //     <TextInput style={{height:40}}
@@ -296,4 +312,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     backgroundColor: 'rgba(247,247,247,1.0)',
   },
+  map:{
+    width:'100%',
+    height: '100%'
+  }
 });
