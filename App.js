@@ -5,109 +5,12 @@
  */
 
 import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-  TouchableHighlight,
-  TouchableOpacity,
-  TouchableNativeFeedback,
-  TouchableWithoutFeedback,
-  FlatList,
-  SectionList,
-  ActivityIndicator,
-  Dimensions,
-  PermissionsAndroid,
-  View
-} from 'react-native';
-import MapView from 'react-native-maps';
+import CurrentLocation from './src/CurrentLocation.js';
 
-
-const width = Dimensions.get('window').width
-const height = Dimensions.get('window').height
-
-// const instructions = Platform.select({
-//   ios: 'Press Cmd+R to reload,\n' +
-//     'Cmd+D or shake for dev menu',
-//   android: 'Double tap R on your keyboard to reload,\n' +
-//     'Shake or press menu button for dev menu',
-// });
-// <Image source={require('/.//./')}/>;
-// <Image source={{uri: 'https://facebook.github.io/react/logo-og.png'}}
-//        style={{width: 400, height: 400}} />
 export default class App extends Component{
-  constructor(props){
-    super(props);
-
-    this.state={
-      latitude: null,
-      longitude: null,
-      error: null,
-      isLoading:true
-    };
-  }
-  async componentDidMount(){
-
-     const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-      'title':'Tracker Phone Location',
-      'message':'This app need access to phone\'s location'
-    })
-
-    if(granted == PermissionsAndroid.RESULTS.GRANTED){
-      this.watchId = navigator.geolocation.watchPosition(
-        (position)=>{
-          this.setState({
-            isLoading:false,
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            error: null,
-          });
-        },
-        (error) => {this.setState({
-          error: error.message,
-          isLoading:false,
-          });
-        },
-        {enableHighAccuracy: true, timeout:20000, maximumAge: 1000},
-      );
-    } else {
-      Alert("You dont have permission to access phone's location");
-    }
-
-
-  }
-
-  componentWillUnmount(){
-    navigator.geolocation.clearWatch(this.watchId);
-  }
-
-  render(){
-    if(this.state.isLoading){
-      return(
-        <View>
-        <ActivityIndicator/>
-        </View>
-      )
-    }
-    return (
-      <MapView
-        style={styles.map}
-          region={{
-            latitude: this.state.latitude,
-            longitude: this.state.longitude,
-            latitudeDelta: 0.02,
-            longitudeDelta: 0.02,
-        }}
-      >
-      <MapView.Marker
-      coordinate={{ latitude: this.state.latitude, longitude: this.state.longitude,}}
-    />
-    </MapView>
-    )
-  }
+  return (
+    <CurrentLocation />
+  )
 }
 
 
@@ -251,63 +154,63 @@ export default class App extends Component{
 //   }
 // }
 
-class TextGreetings extends Component{
-  render(){
-    return(
-      <Text>Hello {this.props.name}!!!</Text>
-    )
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop:22,
-    justifyContent: 'center',
-    alignItems: 'center',
-    // backgroundColor: '#F5FCFF',
-    backgroundColor: 'skyblue',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-  buttonContainer: {
-    margin: 20
-  },
-  buttonText: {
-    padding: 20,
-    color: 'white'
-  },
-  button: {
-    marginBottom: 30,
-    width: 260,
-    alignItems: 'center',
-    backgroundColor: '#2196F3'
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
-    height: 55,
-  },
-  sectionHeader: {
-    paddingTop: 2,
-    paddingLeft: 10,
-    paddingRight: 10,
-    paddingBottom: 2,
-    fontSize: 14,
-    fontWeight: 'bold',
-    backgroundColor: 'rgba(247,247,247,1.0)',
-  },
-  map: {
-    flex: 1,
-    width,
-    height
-  }
-});
+// class TextGreetings extends Component{
+//   render(){
+//     return(
+//       <Text>Hello {this.props.name}!!!</Text>
+//     )
+//   }
+// }
+//
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     paddingTop:22,
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     // backgroundColor: '#F5FCFF',
+//     backgroundColor: 'skyblue',
+//   },
+//   welcome: {
+//     fontSize: 20,
+//     textAlign: 'center',
+//     margin: 10,
+//   },
+//   instructions: {
+//     textAlign: 'center',
+//     color: '#333333',
+//     marginBottom: 5,
+//   },
+//   buttonContainer: {
+//     margin: 20
+//   },
+//   buttonText: {
+//     padding: 20,
+//     color: 'white'
+//   },
+//   button: {
+//     marginBottom: 30,
+//     width: 260,
+//     alignItems: 'center',
+//     backgroundColor: '#2196F3'
+//   },
+//   item: {
+//     padding: 10,
+//     fontSize: 18,
+//     height: 55,
+//   },
+//   sectionHeader: {
+//     paddingTop: 2,
+//     paddingLeft: 10,
+//     paddingRight: 10,
+//     paddingBottom: 2,
+//     fontSize: 14,
+//     fontWeight: 'bold',
+//     backgroundColor: 'rgba(247,247,247,1.0)',
+//   },
+//   map: {
+//     flex: 1,
+//     width,
+//     height
+//   }
+// });
