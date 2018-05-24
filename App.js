@@ -6,8 +6,9 @@
 
 import React, { Component } from 'react';
 import CurrentLocation from './src/CurrentLocation.js';
-import { Button, View, Text,TextInput,Alert } from 'react-native';
+import { Button, View, Text,TextInput,Alert, AsyncStorage } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
+import FormData from 'FormData';
 
 class MapScreen extends Component{
   render(){
@@ -20,34 +21,77 @@ class MapScreen extends Component{
 class HomeScreen extends Component{
   constructor(props){
     super(props);
-    this.state = {
+    state = {
       email:'',
       password:'',
       valid:false
-    };
+    }
+    this._onPressButton = this._onPressButton.bind(this);
   }
+
+  async _onPressButton(val){
+    let email = val.email.toLowerCase().trim();
+    // console.log(email);
+    // var formData = new FormData();
+    // formData.append('email', email);
+    // formData.append('password', val.password);
+
+    try{
+      let res = await fetch('http://api.nkhanhquoc.com/api/check',{
+        method:'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data'
+        },
+        // body: formData
+        body: JSON.stringify({
+          'email': val.email,
+          'password': val.password
+        }),
+      });
+      let resJson = await res.json();
+      // .then((responseJson)=>{
+      //   // this.setState({
+      //   //   isLoading:false,
+      //   //   dataSource:responseJson.movies,
+      //   // }, function(){});
+      if(resJson.code == 0){
+        await AsyncStorage.setItem('token', resJson.data.token);
+        // let token = await AsyncStorage.getItem('token');
+        // if(token != null){
+        //     console.log(token);
+        // } else {
+        //   console.log('cant save AsyncStorage');
+        // }
+      } else {
+        console.log(resJson.message);
+      }
+    }catch(e){
+      console.error(e);
+    }
+  }
+
   render(){
     return(
       <View style={{flex:1, alignItems: 'center',justifyContent:'center'}}>
         <TextInput  style={{height:40,width:300}}
         placeholder='email exp: jonhdoe@example.com'
-        onChangeText={(text) => this.setState({text})}
+        onChangeText={
+          (email) => this.setState({email})
+        }
         keyboardType='email-address'
         />
         <TextInput style={{height:40,width:300,paddingTop:10}}
         placeholder='secret password'
-        onChangeText={(password) => this.setState({password})}
+        onChangeText={
+          (text) => this.setState({password:text})
+        }
         secureTextEntry={true}
         />
-        <Button onPress={this._onPressButton} title="Login"/>
+        <Button onPress={() => this._onPressButton(this.state)} title="Login"/>
       </View>
     )
   }
-
-  _onPressButton(){
-    Alert.alert('you tapped the button!')
-  }
-
 }
 
 
@@ -194,7 +238,7 @@ export default class App extends Component{
   //   })
   //   .catch((error)=>{
   //     console.error(error);
-  //   });d
+  //   });
   // }
 //   render(){
 //     if(this.state.isLoading){
