@@ -11,7 +11,8 @@ import {
   PermissionsAndroid,
   View,
   StyleSheet,
-  AsyncStorage
+  AsyncStorage,
+  Alert
 } from 'react-native';
 import MapView from 'react-native-maps';
 
@@ -63,7 +64,7 @@ export default class CurrentLocation extends Component{
         },
         {enableHighAccuracy: true, timeout:20000},
       );
-      let token = AsyncStorage.getItem('token');
+      let token = await AsyncStorage.getItem('token');
       let res = await fetch('http://api.nkhanhquoc.com/api/store',{
         method:'POST',
         headers: {
@@ -74,14 +75,15 @@ export default class CurrentLocation extends Component{
         body: JSON.stringify({
           'latitude': this.state.latitude,
           'longitude': this.state.longitude,
-          'agent_token':token
+          'agent_token':token,
+          'device':''
         }),
       });
       let resJson = await res.json();
       if(resJson.code == 0){
-        console.log('save data success');
+        alert('save data success');
       } else {
-        console.log(resJson);
+        alert(resJson.message);
       }
     } else {
       Alert("You dont have permission to access phone's location");
