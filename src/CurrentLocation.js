@@ -10,7 +10,8 @@ import {
   Dimensions,
   PermissionsAndroid,
   View,
-  StyleSheet
+  StyleSheet,
+  AsyncStorage
 } from 'react-native';
 import MapView from 'react-native-maps';
 
@@ -39,13 +40,14 @@ export default class CurrentLocation extends Component{
     };
   }
   async componentDidMount(){
-    //  const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-    //   'title':'Tracker Phone Location',
-    //   'message':'This app need access to phone\'s location'
-    // })
+     const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
+      'title':'Tracker Phone Location',
+      'message':'This app need access to phone\'s location'
+    })
 
-    // if(granted == PermissionsAndroid.RESULTS.GRANTED){
-      this.watchId = await navigator.geolocation.watchPosition(
+    if(granted == PermissionsAndroid.RESULTS.GRANTED){
+      console.log('accessing to phone\'s location');
+      await navigator.geolocation.getCurrentPosition(
         (position)=>{
           this.setState({
             isLoading:false,
@@ -61,14 +63,34 @@ export default class CurrentLocation extends Component{
         },
         {enableHighAccuracy: true, timeout:20000},
       );
-    // } else {
-    //   Alert("You dont have permission to access phone's location");
-    // }
+      let token = AsyncStorage.getItem('token');
+      let res = await fetch('http://api.nkhanhquoc.com/api/store',{
+        method:'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data'
+        },
+        // body: formData
+        body: JSON.stringify({
+          'latitude': this.state.latitude,
+          'longitude': this.state.longitude,
+          'agent_token':token
+        }),
+      });
+      let resJson = await res.json();
+      if(resJson.code == 0){
+        console.log('save data success');
+      } else {
+        console.log(resJson);
+      }
+    } else {
+      Alert("You dont have permission to access phone's location");
+    }
   }
 
-  componentWillUnmount(){
-    navigator.geolocation.clearWatch(this.watchId);
-  }
+  // componentWillUnmount(){
+  //   navigator.geolocation.clearWatch(this.watchId);
+  // }
 
   render(){
     if(this.state.isLoading){
