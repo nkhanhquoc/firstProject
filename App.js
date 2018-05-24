@@ -6,12 +6,68 @@
 
 import React, { Component } from 'react';
 import CurrentLocation from './src/CurrentLocation.js';
+import { Button, View, Text,TextInput,Alert } from 'react-native';
+import { createStackNavigator } from 'react-navigation';
+
+class MapScreen extends Component{
+  render(){
+    return (
+      <CurrentLocation />
+    )
+  }
+}
+
+class HomeScreen extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      email:'',
+      password:'',
+      valid:false
+    };
+  }
+  render(){
+    return(
+      <View style={{flex:1, alignItems: 'center',justifyContent:'center'}}>
+        <TextInput  style={{height:40,width:300}}
+        placeholder='email exp: jonhdoe@example.com'
+        onChangeText={(text) => this.setState({text})}
+        keyboardType='email-address'
+        />
+        <TextInput style={{height:40,width:300,paddingTop:10}}
+        placeholder='secret password'
+        onChangeText={(password) => this.setState({password})}
+        secureTextEntry={true}
+        />
+        <Button onPress={this._onPressButton} title="Login"/>
+      </View>
+    )
+  }
+
+  _onPressButton(){
+    Alert.alert('you tapped the button!')
+  }
+
+}
+
+
+const RouteStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Maps: MapScreen
+  }
+);
+
 
 export default class App extends Component{
-  return (
-    <CurrentLocation />
-  )
+  render(){
+    return(
+      <HomeScreen/>
+    )
+  }
 }
+
+
 
 
 

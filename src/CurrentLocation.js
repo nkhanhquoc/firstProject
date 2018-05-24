@@ -9,7 +9,8 @@ import {
   ActivityIndicator,
   Dimensions,
   PermissionsAndroid,
-  View
+  View,
+  StyleSheet
 } from 'react-native';
 import MapView from 'react-native-maps';
 
