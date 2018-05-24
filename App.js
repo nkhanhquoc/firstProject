@@ -118,6 +118,12 @@ const RouteStack = createStackNavigator(
 
 export default class App extends Component{
   render(){
+    const token = AsyncStorage.getItem('token');
+    if(token != null){
+      return(
+        <CurrentLocation />
+      )
+    }
     return(
       <RouteStack />
     )

@@ -39,13 +39,12 @@ export default class CurrentLocation extends Component{
     };
   }
   async componentDidMount(){
+    //  const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
+    //   'title':'Tracker Phone Location',
+    //   'message':'This app need access to phone\'s location'
+    // })
 
-     const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-      'title':'Tracker Phone Location',
-      'message':'This app need access to phone\'s location'
-    })
-
-    if(granted == PermissionsAndroid.RESULTS.GRANTED){
+    // if(granted == PermissionsAndroid.RESULTS.GRANTED){
       this.watchId = await navigator.geolocation.watchPosition(
         (position)=>{
           this.setState({
@@ -60,13 +59,11 @@ export default class CurrentLocation extends Component{
           isLoading:false,
           });
         },
-        {enableHighAccuracy: true, timeout:20000, maximumAge: 1000},
+        {enableHighAccuracy: true, timeout:20000},
       );
-    } else {
-      Alert("You dont have permission to access phone's location");
-    }
-
-
+    // } else {
+    //   Alert("You dont have permission to access phone's location");
+    // }
   }
 
   componentWillUnmount(){
@@ -102,7 +99,7 @@ export default class CurrentLocation extends Component{
 const styles = StyleSheet.create({
   map: {
     flex: 1,
-    width: '100%',
-    height: '100%'
+    width,
+    height
   }
 });
