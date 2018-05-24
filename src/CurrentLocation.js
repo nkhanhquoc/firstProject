@@ -46,7 +46,7 @@ export default class CurrentLocation extends Component{
     })
 
     if(granted == PermissionsAndroid.RESULTS.GRANTED){
-      this.watchId = navigator.geolocation.watchPosition(
+      this.watchId = await navigator.geolocation.watchPosition(
         (position)=>{
           this.setState({
             isLoading:false,
@@ -102,7 +102,7 @@ export default class CurrentLocation extends Component{
 const styles = StyleSheet.create({
   map: {
     flex: 1,
-    width,
-    height
+    width: '100%',
+    height: '100%'
   }
 });

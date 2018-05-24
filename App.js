@@ -19,6 +19,9 @@ class MapScreen extends Component{
 }
 
 class HomeScreen extends Component{
+  static navigationOptions = {
+    title: 'Home',
+  };
   constructor(props){
     super(props);
     state = {
@@ -26,12 +29,13 @@ class HomeScreen extends Component{
       password:'',
       valid:false
     }
-    this._onPressButton = this._onPressButton.bind(this);
+    this.onPressButton = this.onPressButton.bind(this);//khai bao de su dung state, props
   }
 
-  async _onPressButton(val){
+  async onPressButton(val,navi){
+  // async onPressButton = () => {
     let email = val.email.toLowerCase().trim();
-    // console.log(email);
+    console.log(email);
     // var formData = new FormData();
     // formData.append('email', email);
     // formData.append('password', val.password);
@@ -45,7 +49,7 @@ class HomeScreen extends Component{
         },
         // body: formData
         body: JSON.stringify({
-          'email': val.email,
+          'email': email,
           'password': val.password
         }),
       });
@@ -56,13 +60,18 @@ class HomeScreen extends Component{
       //   //   dataSource:responseJson.movies,
       //   // }, function(){});
       if(resJson.code == 0){
+        console.log('token: '+resJson.data.token);
+        await AsyncStorage.removeItem('token');
         await AsyncStorage.setItem('token', resJson.data.token);
-        // let token = await AsyncStorage.getItem('token');
-        // if(token != null){
-        //     console.log(token);
-        // } else {
-        //   console.log('cant save AsyncStorage');
-        // }
+        // .then(() => this.props.navigation.navigate('Maps'));
+        let token = await AsyncStorage.getItem('token');
+        if(token != null){
+          console.log('redirect to Maps');
+          navi.navigate('Maps');
+        }
+        else {
+          console.log('cant save AsyncStorage');
+        }
       } else {
         console.log(resJson.message);
       }
@@ -72,6 +81,7 @@ class HomeScreen extends Component{
   }
 
   render(){
+    const navi = this.props.navigation;
     return(
       <View style={{flex:1, alignItems: 'center',justifyContent:'center'}}>
         <TextInput  style={{height:40,width:300}}
@@ -88,7 +98,7 @@ class HomeScreen extends Component{
         }
         secureTextEntry={true}
         />
-        <Button onPress={() => this._onPressButton(this.state)} title="Login"/>
+        <Button onPress={() => this.onPressButton(this.state,navi)} title="Login"/>
       </View>
     )
   }
@@ -99,6 +109,9 @@ const RouteStack = createStackNavigator(
   {
     Home: HomeScreen,
     Maps: MapScreen
+  },
+  {
+    initialRouteName:'Home'
   }
 );
 
@@ -106,12 +119,10 @@ const RouteStack = createStackNavigator(
 export default class App extends Component{
   render(){
     return(
-      <HomeScreen/>
+      <RouteStack />
     )
   }
 }
-
-
 
 
 
