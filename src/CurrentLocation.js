@@ -54,7 +54,8 @@ export default class CurrentLocation extends Component{
   }
 
   sendLocation = async(position) => {
-    const deviceName = DeviceInfo.getBrand();
+    let deviceName = DeviceInfo.getBrand().toUpperCase();
+    let deviceId = DeviceInfo.getUniqueID();
     let token = await AsyncStorage.getItem('token');
     let res = await fetch('http://api.nkhanhquoc.com/api/store',{
       method:'POST',
@@ -67,7 +68,8 @@ export default class CurrentLocation extends Component{
         'latitude': position.coords.latitude,
         'longitude': position.coords.longitude,
         'agent_token': token,
-        'device': deviceName
+        'device': deviceName,
+        'device_id':deviceId
       }),
     });
     let resJson = await res.json();
