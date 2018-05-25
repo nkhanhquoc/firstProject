@@ -36,9 +36,7 @@ export default class CurrentLocation extends Component{
     title: 'Location',
     headerRight: (
       <TouchableOpacity
-        onPress={() => alert('This is a button!')}
-        title="Info"
-        color="#fff">
+        onPress={() => alert('This is a button!')}>
         <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
       </TouchableOpacity>
     ),
