@@ -15,20 +15,11 @@ import {
   Alert
 } from 'react-native';
 import MapView from 'react-native-maps';
-
+import DeviceInfo from 'react-native-device-info';
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 
-// const instructions = Platform.select({
-//   ios: 'Press Cmd+R to reload,\n' +
-//     'Cmd+D or shake for dev menu',
-//   android: 'Double tap R on your keyboard to reload,\n' +
-//     'Shake or press menu button for dev menu',
-// });
-// <Image source={require('/.//./')}/>;
-// <Image source={{uri: 'https://facebook.github.io/react/logo-og.png'}}
-//        style={{width: 400, height: 400}} />
 export default class CurrentLocation extends Component{
   constructor(props){
     super(props);
@@ -39,7 +30,34 @@ export default class CurrentLocation extends Component{
       error: null,
       isLoading:true
     };
+    this.deviceName = DeviceInfo.getBrand();
+    this.sendLocation = this.sendLocation.bind(this);
   }
+
+  sendLocation = async() => {
+    let token = await AsyncStorage.getItem('token');
+    let res = await fetch('http://api.nkhanhquoc.com/api/store',{
+      method:'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data'
+      },
+      // body: formData
+      body: JSON.stringify({
+        'latitude': this.state.latitude,
+        'longitude': this.state.longitude,
+        'agent_token':token,
+        'device':this.deviceName
+      }),
+    });
+    let resJson = await res.json();
+    if(resJson.code == 0){
+      alert('save data success');
+    } else {
+      alert(resJson.message);
+    }
+  }
+
   async componentDidMount(){
      const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
       'title':'Tracker Phone Location',
@@ -48,7 +66,7 @@ export default class CurrentLocation extends Component{
 
     if(granted == PermissionsAndroid.RESULTS.GRANTED){
       console.log('accessing to phone\'s location');
-      await navigator.geolocation.getCurrentPosition(
+      this.watchId = await navigator.geolocation.watchPosition(
         (position)=>{
           this.setState({
             isLoading:false,
@@ -62,37 +80,17 @@ export default class CurrentLocation extends Component{
           isLoading:false,
           });
         },
-        {enableHighAccuracy: true, timeout:20000},
+        {enableHighAccuracy: true, timeout:60000,maximumAge: 10000},
       );
-      let token = await AsyncStorage.getItem('token');
-      let res = await fetch('http://api.nkhanhquoc.com/api/store',{
-        method:'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data'
-        },
-        // body: formData
-        body: JSON.stringify({
-          'latitude': this.state.latitude,
-          'longitude': this.state.longitude,
-          'agent_token':token,
-          'device':''
-        }),
-      });
-      let resJson = await res.json();
-      if(resJson.code == 0){
-        alert('save data success');
-      } else {
-        alert(resJson.message);
-      }
+      this.sendLocation();
     } else {
       Alert("You dont have permission to access phone's location");
     }
   }
 
-  // componentWillUnmount(){
-  //   navigator.geolocation.clearWatch(this.watchId);
-  // }
+  componentWillUnmount(){
+    navigator.geolocation.clearWatch(this.watchId);
+  }
 
   render(){
     if(this.state.isLoading){

@@ -6,152 +6,58 @@
 
 import React, { Component } from 'react';
 import CurrentLocation from './src/CurrentLocation.js';
-import { Button, View, Text,TextInput,Alert, AsyncStorage } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
-import FormData from 'FormData';
+import LoginScreen from './src/Home.js';
+import { AsyncStorage,StatusBar,View,ActivityIndicator } from 'react-native';
+import { createStackNavigator,createSwitchNavigator } from 'react-navigation';
 
-class MapScreen extends Component{
-  render(){
-    return (
-      <CurrentLocation />
-    )
-  }
-}
-
-class HomeScreen extends Component{
-  static navigationOptions = {
-    title: 'Home',
-  };
+class AuthLoadingScreen extends Component{
   constructor(props){
     super(props);
-    state = {
-      email:'',
-      password:'',
-      valid:false
-    }
-    this.onPressButton = this.onPressButton.bind(this);//khai bao de su dung state, props
+    this._bootstrapAsync();
   }
 
-  async onPressButton(val,navi){
-  // async onPressButton = () => {
-    let email = val.email.toLowerCase().trim();
-    console.log(email);
-    // var formData = new FormData();
-    // formData.append('email', email);
-    // formData.append('password', val.password);
-
-    try{
-      let res = await fetch('http://api.nkhanhquoc.com/api/check',{
-        method:'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data'
-        },
-        // body: formData
-        body: JSON.stringify({
-          'email': email,
-          'password': val.password
-        }),
-      });
-      let resJson = await res.json();
-      // .then((responseJson)=>{
-      //   // this.setState({
-      //   //   isLoading:false,
-      //   //   dataSource:responseJson.movies,
-      //   // }, function(){});
-      if(resJson.code == 0){
-        console.log('token: '+resJson.data.token);
-        await AsyncStorage.removeItem('token');
-        await AsyncStorage.setItem('token', resJson.data.token);
-        // .then(() => this.props.navigation.navigate('Maps'));
-        let token = await AsyncStorage.getItem('token');
-        if(token != null){
-          console.log('redirect to Maps');
-          navi.navigate('Maps');
-        }
-        else {
-          console.log('cant save AsyncStorage');
-        }
-      } else {
-        console.log(resJson.message);
-      }
-    }catch(e){
-      console.error(e);
-    }
+  _bootstrapAsync = async() => {
+    const token = await AsyncStorage.getItem('token');
+    this.props.navigation.navigate(token? 'Maps':'Login');
   }
 
   render(){
-    const navi = this.props.navigation;
     return(
-      <View style={{flex:1, alignItems: 'center',justifyContent:'center'}}>
-        <TextInput  style={{height:40,width:300}}
-        placeholder='email exp: jonhdoe@example.com'
-        onChangeText={
-          (email) => this.setState({email})
-        }
-        keyboardType='email-address'
-        />
-        <TextInput style={{height:40,width:300,paddingTop:10}}
-        placeholder='secret password'
-        onChangeText={
-          (text) => this.setState({password:text})
-        }
-        secureTextEntry={true}
-        />
-        <Button onPress={() => this.onPressButton(this.state,navi)} title="Login"/>
+      <View>
+        <ActivityIndicator />
+        <StatusBar barStyle="default" />
       </View>
     )
   }
 }
 
+const AppStack = createStackNavigator({ Maps: CurrentLocation });
+const AuthStack = createStackNavigator({ Login: LoginScreen });
 
-const RouteStack = createStackNavigator(
+export default App = createSwitchNavigator(
   {
-    Home: HomeScreen,
-    Maps: MapScreen
+    Init: AuthLoadingScreen,
+    App: AppStack,
+    Auth: AuthStack
   },
   {
-    initialRouteName:'Home'
+    initialRouteName: 'Init'
   }
 );
 
 
-export default class App extends Component{
-  render(){
-    AsyncStorage.getItem('token').then((token)=>{
-      if(token){
-        console.log(token);
-        return(
-          <CurrentLocation />
-        )
-      }
-    })
-    // console.log(token);
-    // if(token != null){
-    //   console.log('token:'+token);
-    //   return(
-    //     <CurrentLocation />
-    //   )
-    // }
-    return(
-      <RouteStack />
-    )
-  }
-}
-
-
-
 // export default class App extends Component<Props>{
-
-  // render() {
-  //   return (
-  //     <View style={{flex:1, flexDirection: 'column'}}>
-  //       <View style={{flex:1,backgroundColor:'powderblue'}}><TextGreetings name='Khánh Toong'/></View>
-  //       <View style={{flex:2,backgroundColor:'skyblue'}}><TextGreetings name='Hiền Toong'/></View>
-  //       <View style={{flex:3,backgroundColor:'steelblue'}}><TextGreetings name='Nguyên Toong'/></View>
-  //     </View>
-  //   );
-  // }
+//
+//   render() {
+//     return (
+//       <View style={{flex:1, flexDirection: 'column'}}>
+//         <View style={{flex:1,backgroundColor:'powderblue'}}><TextGreetings name='Khánh Toong'/></View>
+//         <View style={{flex:2,backgroundColor:'skyblue'}}><TextGreetings name='Hiền Toong'/></View>
+//         <View style={{flex:3,backgroundColor:'steelblue'}}><TextGreetings name='Nguyên Toong'/></View>
+//       </View>
+//     );
+//   }
+//   }
   // constructor(props){
   //   super(props);
   //   this.state = {text:''};
