@@ -21,20 +21,23 @@ const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 
 export default class CurrentLocation extends Component{
+  static navigationOptions = {
+    title: 'Location',
+  };
   constructor(props){
     super(props);
 
     this.state={
       latitude: null,
       longitude: null,
-      error: null,
       isLoading:true
     };
-    this.deviceName = DeviceInfo.getBrand();
-    this.sendLocation = this.sendLocation.bind(this);
+    // this.sendLocation = this.sendLocation.bind(this);
+    watchId: (null: ?number);
   }
 
-  sendLocation = async() => {
+  sendLocation = async(position) => {
+    const deviceName = DeviceInfo.getBrand();
     let token = await AsyncStorage.getItem('token');
     let res = await fetch('http://api.nkhanhquoc.com/api/store',{
       method:'POST',
@@ -44,48 +47,48 @@ export default class CurrentLocation extends Component{
       },
       // body: formData
       body: JSON.stringify({
-        'latitude': this.state.latitude,
-        'longitude': this.state.longitude,
-        'agent_token':token,
-        'device':this.deviceName
+        'latitude': position.coords.latitude,
+        'longitude': position.coords.longitude,
+        'agent_token': token,
+        'device': deviceName
       }),
     });
     let resJson = await res.json();
     if(resJson.code == 0){
-      alert('save data success');
+      console.log('save data success');
     } else {
-      alert(resJson.message);
+      console.log(resJson.message);
     }
   }
 
   async componentDidMount(){
-     const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-      'title':'Tracker Phone Location',
-      'message':'This app need access to phone\'s location'
-    })
-
-    if(granted == PermissionsAndroid.RESULTS.GRANTED){
+    //  const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
+    //   'title':'Tracker Phone Location',
+    //   'message':'This app need access to phone\'s location'
+    // })
+    //
+    // if(granted == PermissionsAndroid.RESULTS.GRANTED){
       console.log('accessing to phone\'s location');
       this.watchId = await navigator.geolocation.watchPosition(
+      // await navigator.geolocation.getCurrentPosition(
         (position)=>{
           this.setState({
             isLoading:false,
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
-            error: null,
           });
+          this.sendLocation(position);
         },
         (error) => {this.setState({
           error: error.message,
           isLoading:false,
           });
         },
-        {enableHighAccuracy: true, timeout:60000,maximumAge: 10000},
+        {enableHighAccuracy: false, timeout:20000},
       );
-      this.sendLocation();
-    } else {
-      Alert("You dont have permission to access phone's location");
-    }
+    // } else {
+    //   console.log("You dont have permission to access phone's location");
+    // }
   }
 
   componentWillUnmount(){
@@ -97,6 +100,12 @@ export default class CurrentLocation extends Component{
       return(
         <View>
         <ActivityIndicator/>
+        </View>
+      )
+    } else if (this.state.error != null) {
+      return(
+        <View>
+          <Text>{this.state.error}</Text>
         </View>
       )
     }

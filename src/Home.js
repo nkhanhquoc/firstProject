@@ -3,7 +3,7 @@ import { Button, View, Text,AsyncStorage,TextInput } from 'react-native';
 
 export default class HomeScreen extends Component{
   static navigationOptions = {
-    title: 'Home',
+    title: 'Login',
   };
   constructor(props){
     super(props);
