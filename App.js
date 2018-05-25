@@ -41,7 +41,13 @@ export default App = createSwitchNavigator(
     Auth: AuthStack
   },
   {
-    initialRouteName: 'Init'
+    initialRouteName: 'Init',
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: '#f4511e',
+      },
+      headerTintColor: '#fff',
+    }
   }
 );
 

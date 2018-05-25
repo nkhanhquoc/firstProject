@@ -12,7 +12,10 @@ import {
   View,
   StyleSheet,
   AsyncStorage,
-  Alert
+  Alert,
+  Image,
+  Button,
+  TouchableOpacity
 } from 'react-native';
 import MapView from 'react-native-maps';
 import DeviceInfo from 'react-native-device-info';
@@ -20,9 +23,25 @@ import DeviceInfo from 'react-native-device-info';
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 
+class MenuButton extends Component{
+  render(){
+    return(
+      <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
+    );
+  }
+}
+
 export default class CurrentLocation extends Component{
   static navigationOptions = {
     title: 'Location',
+    headerRight: (
+      <TouchableOpacity
+        onPress={() => alert('This is a button!')}
+        title="Info"
+        color="#fff">
+        <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
+      </TouchableOpacity>
+    ),
   };
   constructor(props){
     super(props);
