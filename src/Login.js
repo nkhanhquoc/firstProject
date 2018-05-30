@@ -13,6 +13,7 @@
 
 import React, { Component } from 'react';
 import { Button, View, Text,AsyncStorage,TextInput } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
 export default class LoginScreen extends Component{
   static navigationOptions = {
@@ -23,7 +24,8 @@ export default class LoginScreen extends Component{
     state = {
       email:'',
       password:'',
-      valid:false
+      valid:false,
+      showError: false
     }
     this.onPressButton = this.onPressButton.bind(this);//khai bao de su dung state, props
   }
@@ -38,6 +40,7 @@ export default class LoginScreen extends Component{
 async onPressButton(val,navi){
     let email = val.email.toLowerCase().trim();
     console.log(email);
+    let deviceId = DeviceInfo.getUniqueID();
 
     try{
       let res = await fetch('http://api.nkhanhquoc.com/api/check',{
@@ -49,7 +52,8 @@ async onPressButton(val,navi){
         // body: formData
         body: JSON.stringify({
           'email': email,
-          'password': val.password
+          'password': val.password,
+          'device_id':deviceId
         }),
       });
       let resJson = await res.json();
@@ -60,6 +64,10 @@ async onPressButton(val,navi){
         // .then(() => this.props.navigation.navigate('Maps'));
         let token = await AsyncStorage.getItem('token');
         if(token != null){
+          if(resJson.data.device_name == 'default'){
+            //add device
+          }
+
           console.log('redirect to Maps');
           this.props.navigation.navigate('Maps');
         }
@@ -78,6 +86,7 @@ async onPressButton(val,navi){
     const navi = this.props.navigation;
     return(
       <View style={{flex:1, alignItems: 'center',justifyContent:'center'}}>
+        // <Text>There are some errors, please login again after some minutes!!!</Text>
         <TextInput  style={{height:40,width:300}}
         placeholder='email exp: jonhdoe@example.com'
         onChangeText={
@@ -92,7 +101,7 @@ async onPressButton(val,navi){
         }
         secureTextEntry={true}
         />
-        <Button onPress={() => this.onPressButton(this.state,navi)} title="Login"/>
+        <Button onPress={() => this.onPressButton(this.state,navi)} title="Login/Register"/>
       </View>
     )
   }
