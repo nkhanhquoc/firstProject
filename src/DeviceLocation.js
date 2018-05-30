@@ -14,7 +14,7 @@ import {
   View,Text,StyleSheet,Image,TouchableOpacity
 } from 'react-native';
 import {MapView} from 'react-native-maps';
-import {StackNavigator} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation';
 
 
 class DeviceLocation extends Component{
@@ -37,7 +37,7 @@ class DeviceLocation extends Component{
   }
 }
 
-export default DeviceNavigate = StackNavigator(
+export default DeviceNavigate = createStackNavigator(
   {
     Home: DeviceLocation
   },
@@ -47,14 +47,14 @@ export default DeviceNavigate = StackNavigator(
       drawerLabel: 'Other Device',
       drawerIcon: ({ tintColor }) => (
         <Image
-          source={require('../resource/images/menu-button.png')}
+          source={require('../resource/images/maps.png')}
           style={[styles.icon, {tintColor: tintColor}]}
         />
       ),
       headerLeft: (
         <TouchableOpacity
           onPress={() => navigation.openDrawer()}>
-          <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
+          <Image source={require('../resource/images/menu-button.png')} style={{width:24, height:24}} />
         </TouchableOpacity>
       ),
     }),

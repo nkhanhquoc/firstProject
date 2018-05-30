@@ -40,7 +40,9 @@ class AuthLoadingScreen extends Component{
 
 const AppStack = createDrawerNavigator(
   {
-  Maps: { screen: CurrentLocation },
+  ThisLocation: {
+    drawerLabel: 'Your Location',
+    screen: CurrentLocation },
   Device: { screen: DeviceLocation }
   },
   {

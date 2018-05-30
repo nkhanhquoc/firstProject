@@ -25,7 +25,7 @@ import {
   Text
 } from 'react-native';
 import MapView from 'react-native-maps';
-import {StackNavigator} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation';
 import DeviceInfo from 'react-native-device-info';
 
 const width = Dimensions.get('window').width
@@ -52,24 +52,6 @@ class CurrentLocation extends Component{
     // this.sendLocation = this.sendLocation.bind(this);
     watchId: (null: ?number);
   }
-
-  // static navigationOptions = ({ navigation }) => {
-  //   headerTitle: 'Location',
-  //   drawerLabel: 'Location',
-    // headerLeft: (
-    //   <TouchableOpacity
-    //     onPress={() => navigation.openDrawer()}>
-    //     <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
-    //   </TouchableOpacity>
-    // ),
-    // drawerIcon: ({ tintColor }) => (
-    //   <Image
-    //     source={require('../resource/images/menu-button.png')}
-    //     style={[styles.icon, {tintColor: tintColor}]}
-    //   />
-    // ),
-  // };
-
   sendLocation = async(position) => {
     let deviceName = DeviceInfo.getBrand().toUpperCase();
     let deviceId = DeviceInfo.getUniqueID();
@@ -163,24 +145,22 @@ class CurrentLocation extends Component{
   }
 }
 
-export default CurrentNavigate = StackNavigator(
+export default CurrentNavigate = createStackNavigator(
   {
     Home: CurrentLocation
   },
   {
     navigationOptions: ({ navigation }) => ({
       headerTitle: 'Your Location',
-      drawerLabel: 'Location',
-      drawerIcon: ({ tintColor }) => (
+      drawerIcon: (
         <Image
-          source={require('../resource/images/menu-button.png')}
-          style={[styles.icon, {tintColor: tintColor}]}
+          source={require('../resource/images/own.png')}
         />
       ),
       headerLeft: (
         <TouchableOpacity
           onPress={() => navigation.openDrawer()}>
-          <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
+          <Image source={require('../resource/images/menu-button.png')} style={{width:24, height:24}} />
         </TouchableOpacity>
       ),
     }),
