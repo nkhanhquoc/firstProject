@@ -1,8 +1,14 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
+ * @Author: Nguyen Quoc Khanh <nkhanhquoc>
+ * @Date:   23-May-2018
+ * @Email:  nkhanhquoc@gmail.com
+ * @Project: {ProjectName}
+ * @Filename: CurrentLocation.js
+ * @Last modified by:   nkhanhquoc
+ * @Last modified time: 30-May-2018
+ * @Copyright: by nkhanhquoc@gmail.com
  */
+
 
 import React, { Component } from 'react';
 import {
@@ -15,32 +21,26 @@ import {
   Alert,
   Image,
   Button,
-  TouchableOpacity
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import MapView from 'react-native-maps';
+import {StackNavigator} from 'react-navigation';
 import DeviceInfo from 'react-native-device-info';
 
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 
-class MenuButton extends Component{
-  render(){
-    return(
-      <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
-    );
-  }
-}
+// class MenuButton extends Component{
+//   render(){
+//     return(
+//       <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
+//     );
+//   }
+// }
 
-export default class CurrentLocation extends Component{
-  static navigationOptions = {
-    title: 'Location',
-    headerRight: (
-      <TouchableOpacity
-        onPress={() => alert('This is a button!')}>
-        <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
-      </TouchableOpacity>
-    ),
-  };
+class CurrentLocation extends Component{
+
   constructor(props){
     super(props);
 
@@ -52,6 +52,23 @@ export default class CurrentLocation extends Component{
     // this.sendLocation = this.sendLocation.bind(this);
     watchId: (null: ?number);
   }
+
+  // static navigationOptions = ({ navigation }) => {
+  //   headerTitle: 'Location',
+  //   drawerLabel: 'Location',
+    // headerLeft: (
+    //   <TouchableOpacity
+    //     onPress={() => navigation.openDrawer()}>
+    //     <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
+    //   </TouchableOpacity>
+    // ),
+    // drawerIcon: ({ tintColor }) => (
+    //   <Image
+    //     source={require('../resource/images/menu-button.png')}
+    //     style={[styles.icon, {tintColor: tintColor}]}
+    //   />
+    // ),
+  // };
 
   sendLocation = async(position) => {
     let deviceName = DeviceInfo.getBrand().toUpperCase();
@@ -81,12 +98,12 @@ export default class CurrentLocation extends Component{
   }
 
   async componentDidMount(){
-    //  const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
-    //   'title':'Tracker Phone Location',
-    //   'message':'This app need access to phone\'s location'
-    // })
-    //
-    // if(granted == PermissionsAndroid.RESULTS.GRANTED){
+     const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,{
+      'title':'Tracker Phone Location',
+      'message':'This app need access to phone\'s location'
+    })
+
+    if(granted == PermissionsAndroid.RESULTS.GRANTED){
       console.log('accessing to phone\'s location');
       this.watchId = await navigator.geolocation.watchPosition(
       // await navigator.geolocation.getCurrentPosition(
@@ -105,9 +122,9 @@ export default class CurrentLocation extends Component{
         },
         {enableHighAccuracy: false, timeout:20000},
       );
-    // } else {
-    //   console.log("You dont have permission to access phone's location");
-    // }
+    } else {
+      console.log("You dont have permission to access phone's location");
+    }
   }
 
   componentWillUnmount(){
@@ -146,10 +163,39 @@ export default class CurrentLocation extends Component{
   }
 }
 
+export default CurrentNavigate = StackNavigator(
+  {
+    Home: CurrentLocation
+  },
+  {
+    navigationOptions: ({ navigation }) => ({
+      headerTitle: 'Your Location',
+      drawerLabel: 'Location',
+      drawerIcon: ({ tintColor }) => (
+        <Image
+          source={require('../resource/images/menu-button.png')}
+          style={[styles.icon, {tintColor: tintColor}]}
+        />
+      ),
+      headerLeft: (
+        <TouchableOpacity
+          onPress={() => navigation.openDrawer()}>
+          <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
+        </TouchableOpacity>
+      ),
+    }),
+  }
+);
+
+
 const styles = StyleSheet.create({
   map: {
     flex: 1,
     width,
     height
+  },
+  icon: {
+    width: 24,
+    height: 24,
   }
 });

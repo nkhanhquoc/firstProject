@@ -1,14 +1,21 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
+ * @Author: Nguyen Quoc Khanh <nkhanhquoc>
+ * @Date:   22-May-2018
+ * @Email:  nkhanhquoc@gmail.com
+ * @Project: {ProjectName}
+ * @Filename: App.js
+ * @Last modified by:   nkhanhquoc
+ * @Last modified time: 30-May-2018
+ * @Copyright: by nkhanhquoc@gmail.com
  */
+
 
 import React, { Component } from 'react';
 import CurrentLocation from './src/CurrentLocation.js';
-import LoginScreen from './src/Home.js';
+import LoginScreen from './src/Login.js';
+import DeviceLocation from './src/DeviceLocation';
 import { AsyncStorage,StatusBar,View,ActivityIndicator } from 'react-native';
-import { createStackNavigator,createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator,createSwitchNavigator,createDrawerNavigator } from 'react-navigation';
 
 class AuthLoadingScreen extends Component{
   constructor(props){
@@ -31,7 +38,21 @@ class AuthLoadingScreen extends Component{
   }
 }
 
-const AppStack = createStackNavigator({ Maps: CurrentLocation });
+const AppStack = createDrawerNavigator(
+  {
+  Maps: { screen: CurrentLocation },
+  Device: { screen: DeviceLocation }
+  },
+  {
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: '#f4511e',
+      },
+      headerTintColor: '#fff',
+    }
+  }
+);
+
 const AuthStack = createStackNavigator({ Login: LoginScreen });
 
 export default App = createSwitchNavigator(

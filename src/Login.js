@@ -1,7 +1,20 @@
+/**
+ * @Author: Nguyen Quoc Khanh <nkhanhquoc>
+ * @Date:   25-May-2018
+ * @Email:  nkhanhquoc@gmail.com
+ * @Project: {ProjectName}
+ * @Filename: Login.js
+ * @Last modified by:   nkhanhquoc
+ * @Last modified time: 30-May-2018
+ * @Copyright: by nkhanhquoc@gmail.com
+ */
+
+
+
 import React, { Component } from 'react';
 import { Button, View, Text,AsyncStorage,TextInput } from 'react-native';
 
-export default class HomeScreen extends Component{
+export default class LoginScreen extends Component{
   static navigationOptions = {
     title: 'Login',
   };
