@@ -31,14 +31,6 @@ import DeviceInfo from 'react-native-device-info';
 const width = Dimensions.get('window').width
 const height = Dimensions.get('window').height
 
-// class MenuButton extends Component{
-//   render(){
-//     return(
-//       <Image source={require('../resource/images/menu-button.png')} style={{width:32, height:32}} />
-//     );
-//   }
-// }
-
 class CurrentLocation extends Component{
   // static navigationOptions = ({ navigation }) => {
   //   return {
@@ -167,6 +159,9 @@ export default CurrentNavigate = createStackNavigator(
           <Image source={require('../resource/images/menu-button.png')} style={{width:24, height:24}} />
         </TouchableOpacity>
       ),
+      headerRight:(
+        <Text>Dropdownlist</Text>
+      )
     }),
   }
 );
