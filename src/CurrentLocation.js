@@ -91,7 +91,6 @@ class CurrentLocation extends Component{
     })
 
     if(granted == PermissionsAndroid.RESULTS.GRANTED){
-      console.log('accessing to phone\'s location');
       this.watchId = await navigator.geolocation.watchPosition(
       // await navigator.geolocation.getCurrentPosition(
         (position)=>{
@@ -156,7 +155,7 @@ export default CurrentNavigate = createStackNavigator(
   },
   {
     navigationOptions: ({ navigation }) => ({
-      headerTitle: navigation.getParam('deviceName','Your Phone Location'),
+      headerTitle: navigation.getParam('deviceName','Your current location'),
       drawerIcon: (
         <Image
           source={require('../resource/images/own.png')}
