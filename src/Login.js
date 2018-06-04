@@ -57,7 +57,9 @@ async onPressButton(val){
             this.props.navigation.navigate('Setup',{ agentId: resJson.data.id });
           } else {
             console.log('redirect to Maps');
-            this.props.navigation.navigate('ThisLocation');
+            this.props.navigation.navigate('ThisLocation',{
+              deviceName: resJson.data.device_name
+            });
           }
 
         }

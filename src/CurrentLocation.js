@@ -40,6 +40,11 @@ const height = Dimensions.get('window').height
 // }
 
 class CurrentLocation extends Component{
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     headerTitle: navigation.getParam('deviceName', 'Your Phone Location'),
+  //   };
+  // };
 
   constructor(props){
     super(props);
@@ -151,7 +156,7 @@ export default CurrentNavigate = createStackNavigator(
   },
   {
     navigationOptions: ({ navigation }) => ({
-      headerTitle: 'Your Location',
+      headerTitle: navigation.getParam('deviceName','Your Phone Location'),
       drawerIcon: (
         <Image
           source={require('../resource/images/own.png')}

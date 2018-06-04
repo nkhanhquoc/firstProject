@@ -52,11 +52,12 @@ export default class SetupPhone extends Component{
           console.log('pl_devicename: '+resJson.data.device_name);
           await AsyncStorage.removeItem('pl_devicename');
           await AsyncStorage.setItem('pl_devicename', resJson.data.device_name);
-          // .then(() => this.props.navigation.navigate('Maps'));
           let deviceName = await AsyncStorage.getItem('pl_devicename');
           if(deviceName != null){
-            console.log('redirect to Maps');
-            this.props.navigation.navigate('ThisLocation');
+            console.log('Set device name success. Redirect to Maps');
+            this.props.navigation.navigate('ThisLocation',{
+              deviceName:  resJson.data.device_name
+            });
           }
           else {
             console.log('cant save AsyncStorage');

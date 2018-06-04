@@ -28,7 +28,13 @@ class AuthLoadingScreen extends Component{
   _bootstrapAsync = async() => {
     let token = await AsyncStorage.getItem('token');
     console.log("token: "+token);
-    this.props.navigation.navigate(token? 'ThisLocation':'Login');
+    if(token != null){
+      let dvName = await AsyncStorage.getItem('pl_devicename');
+      console.log("dv name:"+dvName);
+      this.props.navigation.navigate('ThisLocation',{deviceName: dvName});
+    } else {
+      this.props.navigation.navigate('Login');
+    }
   }
 
   render(){
