@@ -1,16 +1,3 @@
-/**
- * @Author: Nguyen Quoc Khanh <nkhanhquoc>
- * @Date:   25-May-2018
- * @Email:  nkhanhquoc@gmail.com
- * @Project: {ProjectName}
- * @Filename: Login.js
- * @Last modified by:   nkhanhquoc
- * @Last modified time: 30-May-2018
- * @Copyright: by nkhanhquoc@gmail.com
- */
-
-
-
 import React, { Component } from 'react';
 import { Button, View, Text,AsyncStorage,TextInput } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
@@ -37,7 +24,7 @@ export default class LoginScreen extends Component{
  * @param  {[type]}      navi [navigation]
  * @return {Promise}          [description]
  */
-async onPressButton(val,navi){
+async onPressButton(val){
     let email = val.email.toLowerCase().trim();
     console.log(email);
     let deviceId = DeviceInfo.getUniqueID();
@@ -59,17 +46,20 @@ async onPressButton(val,navi){
       let resJson = await res.json();
       if(resJson.code == 0){
         console.log('token: '+resJson.data.token);
+        console.log('device name: '+resJson.data.device_name);
         await AsyncStorage.removeItem('token');
         await AsyncStorage.setItem('token', resJson.data.token);
         // .then(() => this.props.navigation.navigate('Maps'));
         let token = await AsyncStorage.getItem('token');
         if(token != null){
-          if(resJson.data.device_name == 'default'){
-            //add device
+          if(resJson.data.device_name == null || resJson.data.device_name == ''){
+            console.log("device has no name");
+            this.props.navigation.navigate('Setup');
+          } else {
+            console.log('redirect to Maps');
+            this.props.navigation.navigate('ThisLocation');
           }
 
-          console.log('redirect to Maps');
-          this.props.navigation.navigate('Maps');
         }
         else {
           console.log('cant save AsyncStorage');
@@ -83,10 +73,8 @@ async onPressButton(val,navi){
   }
 
   render(){
-    const navi = this.props.navigation;
     return(
       <View style={{flex:1, alignItems: 'center',justifyContent:'center'}}>
-        // <Text>There are some errors, please login again after some minutes!!!</Text>
         <TextInput  style={{height:40,width:300}}
         placeholder='email exp: jonhdoe@example.com'
         onChangeText={
@@ -101,7 +89,7 @@ async onPressButton(val,navi){
         }
         secureTextEntry={true}
         />
-        <Button onPress={() => this.onPressButton(this.state,navi)} title="Login/Register"/>
+        <Button onPress={() => this.onPressButton(this.state)} title="Login/Register"/>
       </View>
     )
   }

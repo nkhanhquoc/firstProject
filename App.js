@@ -4,15 +4,17 @@
  * @Email:  nkhanhquoc@gmail.com
  * @Project: {ProjectName}
  * @Filename: App.js
- * @Last modified by:   nkhanhquoc
- * @Last modified time: 30-May-2018
+ * @Last modified by:   Nguyen Quoc Khanh
+ * @Last modified time: 04-Jun-2018
  * @Copyright: by nkhanhquoc@gmail.com
  */
 
 
 import React, { Component } from 'react';
-import CurrentLocation from './src/CurrentLocation.js';
 import LoginScreen from './src/Login.js';
+import LogoutScreen from './src/Logout';
+import SetupPhone from './src/SetupPhone';
+import CurrentLocation from './src/CurrentLocation.js';
 import DeviceLocation from './src/DeviceLocation';
 import { AsyncStorage,StatusBar,View,ActivityIndicator } from 'react-native';
 import { createStackNavigator,createSwitchNavigator,createDrawerNavigator } from 'react-navigation';
@@ -24,8 +26,9 @@ class AuthLoadingScreen extends Component{
   }
 
   _bootstrapAsync = async() => {
-    const token = await AsyncStorage.getItem('token');
-    this.props.navigation.navigate(token? 'Maps':'Login');
+    let token = await AsyncStorage.getItem('token');
+    console.log("token: "+token);
+    this.props.navigation.navigate(token? 'ThisLocation':'Login');
   }
 
   render(){
@@ -40,10 +43,11 @@ class AuthLoadingScreen extends Component{
 
 const AppStack = createDrawerNavigator(
   {
-  ThisLocation: {
-    drawerLabel: 'Your Location',
-    screen: CurrentLocation },
-  Device: { screen: DeviceLocation }
+    ThisLocation: {
+      drawerLabel: 'Your Location',
+      screen: CurrentLocation },
+    Device: { screen: DeviceLocation },
+    Logout: { screen: LogoutScreen }
   },
   {
     navigationOptions: {
@@ -55,7 +59,15 @@ const AppStack = createDrawerNavigator(
   }
 );
 
-const AuthStack = createStackNavigator({ Login: LoginScreen });
+const AuthStack = createStackNavigator(
+  {
+    Login: LoginScreen,
+    Setup: SetupPhone
+  },
+  {
+    initialRouteName: 'Login',
+  }
+);
 
 export default App = createSwitchNavigator(
   {
