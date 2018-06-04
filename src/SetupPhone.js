@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, View, Text,AsyncStorage,TextInput } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
 export default class SetupPhone extends Component{
   static navigationOptions = {
@@ -21,11 +22,16 @@ export default class SetupPhone extends Component{
    * @param  {[type]}      navi [navigation]
    * @return {Promise}          [description]
    */
-  async onPressButton(val,navi){
+  async onPressButton(val){
       let name = val.phonename.trim();
       console.log(name);
       let deviceId = DeviceInfo.getUniqueID();
-      let agentId = AsyncStorage.get('token');
+      let agentId = this.props.navigation.getParam('agentId',0);
+      console.log(JSON.stringify({
+        'agent_id': agentId,
+        'device_name': name,
+        'device_id':deviceId
+      }));
 
       try{
         let res = await fetch('http://api.nkhanhquoc.com/api/add-device',{
@@ -56,7 +62,7 @@ export default class SetupPhone extends Component{
             console.log('cant save AsyncStorage');
           }
         } else {
-          console.log(resJson.message);
+          console.log("ERROR: "+resJson.message);
         }
       }catch(e){
         console.error(e);
@@ -65,13 +71,12 @@ export default class SetupPhone extends Component{
   render(){
     return(
       <View style={{flex:1, alignItems: 'center',justifyContent:'center'}}>
+        <Text>Named Your Phone</Text>
         <TextInput style={{height:40,width:300}}
-        placeholder='phonename'
-        onChangeText={
+        placeholder='phonename' onChangeText={
           (phonename) => this.setState({phonename})
-        }
-        />
-        <Button onPress={() => this.onPressButton(this.state,navi)} title="Save"/>
+        }/>
+        <Button onPress={() => this.onPressButton(this.state)} title="Save"/>
       </View>
     );
   }

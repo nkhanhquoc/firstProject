@@ -54,7 +54,7 @@ async onPressButton(val){
         if(token != null){
           if(resJson.data.device_name == null || resJson.data.device_name == ''){
             console.log("device has no name");
-            this.props.navigation.navigate('Setup');
+            this.props.navigation.navigate('Setup',{ agentId: resJson.data.id });
           } else {
             console.log('redirect to Maps');
             this.props.navigation.navigate('ThisLocation');
